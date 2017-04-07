@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+    <servlet>
+        <servlet-name>StartChargingServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.StartChargingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StartChargingServlet</servlet-name>
+        <url-pattern>/charging/start</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StopChargingServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.StopChargingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StopChargingServlet</servlet-name>
+        <url-pattern>/charging/stop</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>
