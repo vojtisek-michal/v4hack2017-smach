@@ -2,7 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
     <servlet>
         <servlet-name>StartChargingServlet</servlet-name>
-        <servlet-class>cz.vojtisek.smach.backend.StartChargingServlet</servlet-class>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.StartChargingServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>StartChargingServlet</servlet-name>
@@ -10,13 +10,43 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>UpdateChargingServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.UpdateChargingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateChargingServlet</servlet-name>
+        <url-pattern>/charging/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>StopChargingServlet</servlet-name>
-        <servlet-class>cz.vojtisek.smach.backend.StopChargingServlet</servlet-class>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.StopChargingServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>StopChargingServlet</servlet-name>
         <url-pattern>/charging/stop</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AmpServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.AmpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AmpServlet</servlet-name>
+        <url-pattern>/amp</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>cz.vojtisek.smach.backend.OfyHelper</listener-class>
+    </listener>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
