@@ -63,15 +63,32 @@ CONFIG = dict(
 	SDS_COMUNITY=args.sds_snmp_comunity
 	)
 
+charging = False
+charged = False
+done_counter = 0
+
 while True:
 
-	time.sleep(1)
-
 	try:
+		# OFF rele for case that was left ON before unplug
+		rel_set(CONFIG, 0)
+
+		# get stats to check if SDS is runnig
 		stats = charging_stats(CONFIG)
-		print "Cable pluged."
+
+		if charged:
+			print "Charged"
+			time.sleep(1)
+			continue
+		else:
+			print "Cable pluged."
 	except:
 		print "Boring..."
+
+		done_counter = 0
+		charged = False
+		time.sleep(1)
+
 		continue
 
 	# IF SDS response do this:
@@ -83,26 +100,57 @@ while True:
 	rel_set(CONFIG, 1)
 	print "Charging by", amp, "A"
 
-
 	while True:
 
 		try:
+			# get stats to check if SDS is runnig
 			stats = charging_stats(CONFIG)
-			print "Sending stats:", stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
+
+			curr_amps = int((stats['current']*1000)/230)
+
+			# Charging in progres after some current is measured
+			if not charging and curr_amps > 0:
+				charging = True
+
+			if charging and curr_amps < 1:
+				done_counter = done_counter + 1
+
+			if done_counter > 1:
+				stop_charging(CONFIG, charging_id)
+				print "Batery fully charged. Charging stoped"
+				charged = True
+				charging = False
+				break
+
+			print "Sending stats:", stats['current'], 'kW', curr_amps, 'A, total:', stats['total'], 'kWh'
 		except:
 			stop_charging(CONFIG, charging_id)
 			print "Cable unpluged. Charging stoped."
+			charged = True
+			charging = False
 
 			break
 
 		ses_id = "charging_session_id="+ charging_id
 		curr_w = "&watt_current=%i" % (stats['current']*1000)
 		tota_w = "&watt_total=%i" % (stats['total']*1000)
-		curr_a = "&amp_current=%i" % int((stats['current']*1000)/230)
-		set_a  = "&amp_set=0"
+		curr_a = "&amp_current=%i" % curr_amps
+		set_a  = "&amp_set=%i" % amp
 
 		res = urllib2.urlopen(
 			CONFIG['API_URL'] + "/charging/update?" + ses_id + curr_w + tota_w + curr_a + set_a
-			)
+			).read()
+
+		if int(res) == 0:
+			stop_charging(CONFIG, charging_id)
+			print "Charging stoped by back-end."
+			charged = True
+			charging = False
+
+			break
+
+
 
 		time.sleep(1)
+
+	time.sleep(1)
