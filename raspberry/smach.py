@@ -63,41 +63,44 @@ CONFIG = dict(
 	SDS_COMUNITY=args.sds_snmp_comunity
 	)
 
-#print url
-
-charging_id = init_charging(CONFIG)
-print "Starting new charging sesstion id:", charging_id
-print "Waiting for chargingi current..."
-
-amp = get_amp(CONFIG, charging_id)
-print "Charging by", amp, "A"
-
 while True:
-
-	try:
-		stats = charging_stats(CONFIG)
-		print "Sending stats:", stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
-	except:
-		stop_charging(CONFIG, charging_id)
-		print "Cable unpluged. Charging stoped."
-
-		break
-
-	ses_id = "charging_session_id="+ charging_id
-	curr_w = "&watt_current=%i" % (stats['current']*1000)
-	tota_w = "&watt_total=%i" % (stats['total']*1000)
-	curr_a = "&amp_current=%i" % int((stats['current']*1000)/230)
-	set_a  = "&amp_set=0"
-
-	res = urllib2.urlopen(
-		CONFIG['API_URL'] + "/charging/update?" + ses_id + curr_w + tota_w + curr_a + set_a
-		)
-
-	#print res
-
-
-#	rel_set(1)
 
 	time.sleep(1)
 
-#	rel_set(0)
+	try:
+		stats = charging_stats(CONFIG)
+		print "Cable pluged."
+	except:
+		print "Boring..."
+		continue
+
+	# IF SDS response do this:
+	charging_id = init_charging(CONFIG)
+	print "Starting new charging sesstion id:", charging_id
+	print "Waiting for chargingi current..."
+
+	amp = get_amp(CONFIG, charging_id)
+	print "Charging by", amp, "A"
+
+	while True:
+
+		try:
+			stats = charging_stats(CONFIG)
+			print "Sending stats:", stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
+		except:
+			stop_charging(CONFIG, charging_id)
+			print "Cable unpluged. Charging stoped."
+
+			break
+
+		ses_id = "charging_session_id="+ charging_id
+		curr_w = "&watt_current=%i" % (stats['current']*1000)
+		tota_w = "&watt_total=%i" % (stats['total']*1000)
+		curr_a = "&amp_current=%i" % int((stats['current']*1000)/230)
+		set_a  = "&amp_set=0"
+
+		res = urllib2.urlopen(
+			CONFIG['API_URL'] + "/charging/update?" + ses_id + curr_w + tota_w + curr_a + set_a
+			)
+
+		time.sleep(1)
