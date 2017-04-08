@@ -18,17 +18,19 @@ public class SmachNotificationExtender extends NotificationExtenderService {
                 String event = data.optString("event");
                 if ("charging_start".equals(event)) {
                     Intent i = new Intent(this, MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.putExtra(MainActivity.EXTRA_CHARGING_SESSION_ID, chargingSessionId);
                     startActivity(i);
+                    return true;
                 } else if ("charging_end".equals(event)) {
                     Intent i = new Intent(MonitoringActivity.ACTION_CHARGING_END);
                     sendBroadcast(i);
+                    return true;
                 }
             }
         }
 
-
         // Return true to stop the notification from displaying.
-        return true;
+        return false;
     }
 }
