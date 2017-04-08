@@ -108,8 +108,7 @@ while True:
 
 			curr_amps = int((stats['current']*1000)/230)
 
-			print curr_amps, done_counter
-
+			# Charging in progres after some current is measured
 			if not charging and curr_amps > 0:
 				charging = True
 
@@ -127,6 +126,8 @@ while True:
 		except:
 			stop_charging(CONFIG, charging_id)
 			print "Cable unpluged. Charging stoped."
+			charged = True
+			charging = False
 
 			break
 
@@ -138,7 +139,17 @@ while True:
 
 		res = urllib2.urlopen(
 			CONFIG['API_URL'] + "/charging/update?" + ses_id + curr_w + tota_w + curr_a + set_a
-			)
+			).read()
+
+		if int(res) == 0:
+			stop_charging(CONFIG, charging_id)
+			print "Charging stoped by back-end."
+			charged = True
+			charging = False
+
+			break
+
+
 
 		time.sleep(1)
 
