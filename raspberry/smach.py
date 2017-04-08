@@ -79,8 +79,17 @@ while True:
 	print "Starting new charging sesstion id:", charging_id
 	print "Waiting for chargingi current..."
 
-	amp = get_amp(CONFIG, charging_id)
-	print "Charging by", amp, "A"
+	try:
+		amp = get_amp(CONFIG, charging_id)
+		print "Charging by", amp, "A"
+
+		# Activate charging rele
+		rel_set(CONFIG, 1)
+	except:
+		print "No value. Ending chraging sesion"
+		stop_charging(CONFIG, charging_id)
+		continue
+
 
 	while True:
 

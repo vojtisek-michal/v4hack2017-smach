@@ -15,10 +15,11 @@ def stop_charging(CONFIG, charging_id):
     '''
     Inform, that charging was stoped
     '''
-    amps = urllib2.urlopen(CONFIG['API_URL'] + "/charging/stop?charging_session_id=" + charging_id)
+    urllib2.urlopen(CONFIG['API_URL'] + "/charging/stop?charging_session_id=" + charging_id)
+    rel_set(CONFIG, 0)
 
 
-def get_amp(CONFIG, charging_id):
+def get_amp(CONFIG, charging_id, limit=0):
     '''
     Wait for chargingn current
     '''
@@ -26,9 +27,11 @@ def get_amp(CONFIG, charging_id):
 
     if amps > 0:
         return amps
-    else:
+    elif limi < 30:
         time.sleep(1)
-        return get_amp(CONFIG, charging_id)
+        return get_amp(CONFIG, charging_id, limit + 1)
+    else:
+        raise Exception
 
 
 def charging_stats(CONFIG):
