@@ -15,8 +15,13 @@ def stop_charging(CONFIG, charging_id):
     '''
     Inform, that charging was stoped
     '''
+
     urllib2.urlopen(CONFIG['API_URL'] + "/charging/stop?charging_session_id=" + charging_id)
-    rel_set(CONFIG, 0)
+
+    try:
+        rel_set(CONFIG, 0)
+    except:
+        pass
 
 
 def get_amp(CONFIG, charging_id, limit=0):
