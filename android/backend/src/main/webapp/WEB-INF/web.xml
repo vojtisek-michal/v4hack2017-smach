@@ -19,6 +19,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ChargingServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.ChargingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChargingServlet</servlet-name>
+        <url-pattern>/charging</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>StopChargingServlet</servlet-name>
         <servlet-class>cz.vojtisek.smach.backend.servlet.StopChargingServlet</servlet-class>
     </servlet>

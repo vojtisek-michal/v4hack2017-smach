@@ -24,6 +24,10 @@ public class StartChargingServlet extends HttpServlet {
         chargingSession.active = true;
         ObjectifyService.ofy().save().entity(chargingSession).now();
 
+        OpenSignalHelper openSignalHelper = new OpenSignalHelper();
+        String response = openSignalHelper.pushMessage("&data[event]=charging_start&data[charging_session_id]=" + chargingSession.id);
+        log("postToOpenSignal response = " + response);
+
         out.print(chargingSession.id);
     }
 
