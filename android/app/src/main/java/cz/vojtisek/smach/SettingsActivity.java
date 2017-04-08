@@ -3,6 +3,7 @@ package cz.vojtisek.smach;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
@@ -34,6 +36,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
+            /*if (preference.getKey().equals("public_station")) {
+                if (value.equals(Boolean.TRUE)){
+                    new AlertDialog.Builder(preference.getContext())
+                            .setTitle("Caution")
+                            .setMessage("By switching this feature on your cable will be displayed at the map of community charging stations.\n\nDo not use this feature if you don't plan to keep it enabled for several hours.")
+                            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            } else */
             if (preference.getKey().equals("kwh_price")) {
                 preference.setSummary(String.format(Locale.ENGLISH,
                         "You charge %s Kč for 1 kWh", stringValue));
@@ -183,6 +199,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("kwh_price"));
+            //bindPreferenceSummaryToValue(findPreference("public_station"));
         }
 
         @Override

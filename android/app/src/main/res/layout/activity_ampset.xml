@@ -26,9 +26,17 @@
         android:max="31"
         android:progress="15" />
 
+    <EditText
+        android:id="@+id/editTextPin"
+        android:hint="Enter your PIN"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword" />
+
     <Button
         android:id="@+id/button"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Set" />

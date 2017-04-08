@@ -1,5 +1,6 @@
 package cz.vojtisek.smach;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +45,7 @@ public class MonitoringActivity extends AppCompatActivity {
     private TextView mTextViewTotalPrice;
     private View mLayoutReview;
     private EditText mEditTextReview;
+    private Button mButtonSave;
     private Button mButtonStop;
 
     private Handler mHandler = new Handler() {
@@ -82,11 +84,16 @@ public class MonitoringActivity extends AppCompatActivity {
         mTextViewTotalPrice = (TextView) findViewById(R.id.textViewTotalPrice);
         mLayoutReview = findViewById(R.id.layoutReview);
         mEditTextReview = (EditText) findViewById(R.id.editTextReview);
-        Button buttonSave = (Button) findViewById(R.id.buttonSave);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        mButtonSave = (Button) findViewById(R.id.buttonSave);
+        mButtonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MonitoringActivity.this);
+                if (prefs.getBoolean("public_station", false)) {
+                    showProgressDialogAndFinish();
+                } else {
+                    finish();
+                }
             }
         });
         mButtonStop = (Button) findViewById(R.id.buttonStop);
@@ -115,7 +122,27 @@ public class MonitoringActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    private void showProgressDialogAndFinish() {
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(MonitoringActivity.this,
+                "Please wait ...",	"Proceeding payment ...", true, false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2500);
+                } catch (Exception e) {
+                }
+                ringProgressDialog.dismiss();
+                finish();
+            }
+        }).start();
+    }
+
     private void onChargingEnd() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("public_station", false)) {
+            mButtonSave.setText("Pay");
+        }
         mButtonStop.setVisibility(View.GONE);
         mLayoutReview.setVisibility(View.VISIBLE);
         mEditTextReview.requestFocus();

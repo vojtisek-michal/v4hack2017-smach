@@ -2,13 +2,18 @@ package cz.vojtisek.smach;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,6 +33,7 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
     private SeekBar mSeekBar;
     private TextView mTextView;
     private String mChargingSessionId;
+    private EditText mEditTextPin;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -52,6 +58,15 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mTextView = (TextView) findViewById(R.id.textView);
         mSeekBar.setOnSeekBarChangeListener(this);
+        mEditTextPin = (EditText) findViewById(R.id.editTextPin);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("public_station", false)) {
+            mEditTextPin.setVisibility(View.VISIBLE);
+        } else {
+            mEditTextPin.setVisibility(View.GONE);
+        }
+
         findViewById(R.id.button).setOnClickListener(this);
 
         onProgressChanged(mSeekBar, mSeekBar.getProgress(), false);
@@ -74,6 +89,23 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
 
     @Override
     public void onClick(View view) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("public_station", false)) {
+            if (!"1234".equals(mEditTextPin.getText().toString())) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Invalid PIN")
+                        .setMessage("Please enver valid PIN.")
+                        .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return;
+            }
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://parabolic-might-163914.appspot.com/")
                 .addConverterFactory(ScalarsConverterFactory.create())
