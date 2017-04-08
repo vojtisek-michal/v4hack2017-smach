@@ -99,10 +99,10 @@ public class MonitoringActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
-
         mHandler.removeMessages(MSG_DO_IT);
         unregisterReceiver(mReceiver);
+
+        super.onPause();
     }
 
     private void onChargingEnd() {

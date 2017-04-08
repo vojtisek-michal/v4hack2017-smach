@@ -1,7 +1,11 @@
 package cz.vojtisek.smach;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,12 +22,23 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static cz.vojtisek.smach.MonitoringActivity.ACTION_CHARGING_END;
+
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     public static String EXTRA_CHARGING_SESSION_ID = "EXTRA_CHARGING_SESSION_ID";
     private SeekBar mSeekBar;
     private TextView mTextView;
     private String mChargingSessionId;
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_CHARGING_END.equals(intent.getAction())) {
+                finish();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,5 +99,19 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        registerReceiver(mReceiver, new IntentFilter(ACTION_CHARGING_END));
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+
+        super.onPause();
     }
 }
