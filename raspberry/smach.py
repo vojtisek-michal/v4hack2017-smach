@@ -68,6 +68,7 @@ while True:
 	time.sleep(1)
 
 	try:
+		rel_set(CONFIG, 0)
 		stats = charging_stats(CONFIG)
 		print "Cable pluged."
 	except:
@@ -87,6 +88,10 @@ while True:
 	while True:
 
 		try:
+			# OFF rele for case that was left ON before unplug
+			rel_set(CONFIG, 0)
+
+			# get stats to check if SDS is runnig
 			stats = charging_stats(CONFIG)
 			print "Sending stats:", stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
 		except:
