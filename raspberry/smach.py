@@ -5,7 +5,7 @@ import argparse
 import urllib2
 import time
 
-from lib import init_charging, charging_stats
+from lib import init_charging, stop_charging, charging_stats, rel_set, get_amp
 
 # ==API==
 #
@@ -20,7 +20,7 @@ from lib import init_charging, charging_stats
 #
 # charging/stop?charging_session_id=
 #
-# get-current-amp?charging_session_id=
+# amp?charging_session_id=
 #  <- amp_set
 
 parser = argparse.ArgumentParser()
@@ -30,9 +30,16 @@ parser.add_argument('apiurl',
     help='URL adress of API endpoint',
 	)
 
-parser.add_argument('sdsurl',
-	metavar='SDS_URL',
-    help='URL adress of SDS Micro web server',
+parser.add_argument('-ip', '--sds-ip',
+	metavar='SDS_IP',
+    help='IP adress of SDS Micro',
+	default='192.168.1.250'
+	)
+
+parser.add_argument('-p', '--sds-port',
+	metavar='SDS_PORT',
+    help='PORT for SDS Micro UDP communication',
+	default=280
 	)
 
 parser.add_argument('-wn', '--wattmeter-name',
@@ -40,23 +47,41 @@ parser.add_argument('-wn', '--wattmeter-name',
 	default='wattmeter'
 	)
 
+parser.add_argument('-c', '--sds-snmp-comunity',
+	help='Name of SDS SNMP comunity',
+	default='sdsxpublic'
+	)
+
 
 args = parser.parse_args()
 
 CONFIG = dict(
 	API_URL=args.apiurl,
-	SDS_URL=args.sdsurl,
-	WATTMETTER_NAME=args.wattmeter_name
+	SDS_IP=args.sds_ip,
+	SDS_PORT=args.sds_port,
+	WATTMETTER_NAME=args.wattmeter_name,
+	SDS_COMUNITY=args.sds_snmp_comunity
 	)
 
 #print url
 
 charging_id = init_charging(CONFIG)
+print "Starting new charging sesstion id:", charging_id
+print "Waiting for chargingi current..."
+
+amp = get_amp(CONFIG, charging_id)
+print "Charging by", amp, "A"
 
 while True:
 
-	stats = charging_stats(CONFIG)
-	print stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
+	try:
+		stats = charging_stats(CONFIG)
+		print "Sending stats:", stats['current'], 'kW', int((stats['current']*1000)/230), 'A, total:', stats['total'], 'kWh'
+	except:
+		stop_charging(CONFIG, charging_id)
+		print "Cable unpluged. Charging stoped."
+
+		break
 
 	ses_id = "charging_session_id="+ charging_id
 	curr_w = "&watt_current=%i" % (stats['current']*1000)
@@ -70,4 +95,9 @@ while True:
 
 	#print res
 
+
+#	rel_set(1)
+
 	time.sleep(3)
+
+#	rel_set(0)
