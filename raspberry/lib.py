@@ -24,8 +24,6 @@ def get_amp(CONFIG, charging_id):
     '''
     amps = int(urllib2.urlopen(CONFIG['API_URL'] + "/amp?charging_session_id=" + charging_id).read())
 
-    print amps, '----'
-
     if amps > 0:
         return amps
     else:

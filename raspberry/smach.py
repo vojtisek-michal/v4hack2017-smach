@@ -98,6 +98,6 @@ while True:
 
 #	rel_set(1)
 
-	time.sleep(3)
+	time.sleep(1)
 
 #	rel_set(0)
