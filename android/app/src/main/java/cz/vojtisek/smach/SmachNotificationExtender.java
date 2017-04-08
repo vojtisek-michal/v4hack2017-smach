@@ -21,7 +21,8 @@ public class SmachNotificationExtender extends NotificationExtenderService {
                     i.putExtra(MainActivity.EXTRA_CHARGING_SESSION_ID, chargingSessionId);
                     startActivity(i);
                 } else if ("charging_end".equals(event)) {
-                    //TODO
+                    Intent i = new Intent(MonitoringActivity.ACTION_CHARGING_END);
+                    sendBroadcast(i);
                 }
             }
         }

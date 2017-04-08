@@ -1,12 +1,19 @@
 package cz.vojtisek.smach;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -18,11 +25,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import static cz.vojtisek.smach.MainActivity.EXTRA_CHARGING_SESSION_ID;
 
 public class MonitoringActivity extends AppCompatActivity {
+
+    public static String ACTION_CHARGING_END = "cz.vojtisek.smach.ACTION_CHARGING_END";
 
     private static final long TIME_BETWEEN_MESSAGES = 2 * DateUtils.SECOND_IN_MILLIS;
     private static final int MSG_DO_IT = 1;
@@ -32,6 +40,8 @@ public class MonitoringActivity extends AppCompatActivity {
     private TextView mTextViewSetAmp;
     private TextView mTextViewTotalWatt;
     private TextView mTextViewTotalPrice;
+    private View mLayoutReview;
+    private EditText mEditTextReview;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -40,6 +50,15 @@ public class MonitoringActivity extends AppCompatActivity {
 
             Message newMsg = obtainMessage(MSG_DO_IT);
             sendMessageDelayed(newMsg, TIME_BETWEEN_MESSAGES);
+        }
+    };
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_CHARGING_END.equals(intent.getAction())) {
+                onChargingEnd();
+            }
         }
     };
 
@@ -58,6 +77,15 @@ public class MonitoringActivity extends AppCompatActivity {
         mTextViewSetAmp = (TextView) findViewById(R.id.textViewSetAmp);
         mTextViewTotalWatt = (TextView) findViewById(R.id.textViewTotalWatt);
         mTextViewTotalPrice = (TextView) findViewById(R.id.textViewTotalPrice);
+        mLayoutReview = findViewById(R.id.layoutReview);
+        mEditTextReview = (EditText) findViewById(R.id.editTextReview);
+        Button buttonSave = (Button) findViewById(R.id.buttonSave);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -66,6 +94,7 @@ public class MonitoringActivity extends AppCompatActivity {
 
         Message newMsg = mHandler.obtainMessage(MSG_DO_IT);
         mHandler.sendMessage(newMsg);
+        registerReceiver(mReceiver, new IntentFilter(ACTION_CHARGING_END));
     }
 
     @Override
@@ -73,6 +102,12 @@ public class MonitoringActivity extends AppCompatActivity {
         super.onPause();
 
         mHandler.removeMessages(MSG_DO_IT);
+        unregisterReceiver(mReceiver);
+    }
+
+    private void onChargingEnd() {
+        mLayoutReview.setVisibility(View.VISIBLE);
+        mEditTextReview.requestFocus();
     }
 
     private void readData() {
