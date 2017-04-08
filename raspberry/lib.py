@@ -39,7 +39,7 @@ def get_amp(CONFIG, charging_id, limit=0):
 
 
 def charging_stats(CONFIG):
-    sds_data = urllib2.urlopen("http://"+ CONFIG['SDS_IP'] + "/xml.xml", timeout=3).read()
+    sds_data = urllib2.urlopen("http://"+ CONFIG['SDS_IP'] + "/xml.xml", timeout=1).read()
 
     total_start = sds_data.find('<text>', sds_data.find(CONFIG['WATTMETTER_NAME'])) + len('<text>')
     total_end = sds_data.find('</text>', total_start) - len('kWh')
