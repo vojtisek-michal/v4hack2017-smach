@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cz.vojtisek.smach.backend.ChargingSession;
+import cz.vojtisek.smach.backend.OpenSignalHelper;
 
 public class StopChargingServlet extends HttpServlet {
 

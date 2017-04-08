@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="public_station"
+        android:summary="Allow other community members to use your station"
+        android:title="Public station" />
+
+    <EditTextPreference
+        android:defaultValue="5.5"
+        android:inputType="numberDecimal"
+        android:key="kwh_price"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="kWh price"
+        android:summary="How much you charge for 1 kWh in Kč"/>
+</PreferenceScreen>

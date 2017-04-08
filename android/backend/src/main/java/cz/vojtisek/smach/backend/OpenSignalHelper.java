@@ -1,4 +1,4 @@
-package cz.vojtisek.smach.backend.servlet;
+package cz.vojtisek.smach.backend;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

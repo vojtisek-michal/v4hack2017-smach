@@ -1,18 +1,16 @@
 package cz.vojtisek.smach;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.Message;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.SeekBar;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import java.util.Locale;
 
@@ -20,98 +18,94 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import static cz.vojtisek.smach.MonitoringActivity.ACTION_CHARGING_END;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-
-    public static String EXTRA_CHARGING_SESSION_ID = "EXTRA_CHARGING_SESSION_ID";
-    private SeekBar mSeekBar;
-    private TextView mTextView;
-    private String mChargingSessionId;
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_CHARGING_END.equals(intent.getAction())) {
-                finish();
-            }
-        }
-    };
+    private TextView mTextViewTotalYearCon;
+    private TextView mTextViewTotalMonthCon;
+    private TextView mTextViewTotalWeekCon;
+    private TextView mTextViewTotalYearCost;
+    private TextView mTextViewTotalMonthCost;
+    private TextView mTextViewTotalWeekCost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mChargingSessionId = getIntent().getStringExtra(EXTRA_CHARGING_SESSION_ID);
-        if (TextUtils.isEmpty(mChargingSessionId)) {
-            finish();
-        }
-
         setContentView(R.layout.activity_main);
+        setTitle(getTitle() + " - Counters");
 
-        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
-        mTextView = (TextView) findViewById(R.id.textView);
-        mSeekBar.setOnSeekBarChangeListener(this);
-        findViewById(R.id.button).setOnClickListener(this);
-
-        onProgressChanged(mSeekBar, mSeekBar.getProgress(), false);
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        mTextView.setText(String.format(Locale.ENGLISH, "%d A", i+1));
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://parabolic-might-163914.appspot.com/")
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-        API api = retrofit.create(API.class);
-
-        Call<String> call = api.setAmp(mChargingSessionId, mSeekBar.getProgress()+1);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                //Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_LONG).show();
-                Intent i = new Intent(MainActivity.this, MonitoringActivity.class);
-                i.putExtra(MainActivity.EXTRA_CHARGING_SESSION_ID, mChargingSessionId);
-                startActivity(i);
-                finish();
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("MainActivity", t.getMessage());
-            }
-        });
-
+        mTextViewTotalYearCon = (TextView) findViewById(R.id.textViewTotalYearCon);
+        mTextViewTotalMonthCon = (TextView) findViewById(R.id.textViewTotalMonthCon);
+        mTextViewTotalWeekCon = (TextView) findViewById(R.id.textViewTotalWeekCon);
+        mTextViewTotalYearCost = (TextView) findViewById(R.id.textViewTotalYearCost);
+        mTextViewTotalMonthCost = (TextView) findViewById(R.id.textViewTotalMonthCost);
+        mTextViewTotalWeekCost = (TextView) findViewById(R.id.textViewTotalWeekCost);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        registerReceiver(mReceiver, new IntentFilter(ACTION_CHARGING_END));
+        loadData();
     }
 
     @Override
-    protected void onPause() {
-        unregisterReceiver(mReceiver);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu);
+        return true;
+    }
 
-        super.onPause();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_map) {
+            startActivity(new Intent(this, MapsActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://parabolic-might-163914.appspot.com/")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        API api = retrofit.create(API.class);
+        Call<String> call = api.getStats();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                int totalWats = Integer.valueOf(response.body().trim());
+                long totalCost = Math.round(Integer.valueOf(response.body().trim()) * Float.valueOf(prefs.getString("kwh_price", "5.5"))/1000);
+
+                mTextViewTotalYearCon.setText(formatWithThousant(totalWats));
+                mTextViewTotalMonthCon.setText(formatWithThousant(totalWats));
+                mTextViewTotalWeekCon.setText(formatWithThousant(totalWats));
+
+                mTextViewTotalYearCost.setText(String.format(Locale.ENGLISH,
+                        "%d Kč", totalCost));
+                mTextViewTotalMonthCost.setText(String.format(Locale.ENGLISH,
+                        "%d Kč", totalCost));
+                mTextViewTotalWeekCost.setText(String.format(Locale.ENGLISH,
+                        "%d Kč", totalCost));
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+            }
+        });
+    }
+
+    private String formatWithThousant(int value) {
+        if (value >= 1000) {
+            return String.format(Locale.ENGLISH, "%.2f kWh", (float) value / 1000);
+        } else {
+            return String.format(Locale.ENGLISH, "%d Wh", value);
+        }
     }
 }

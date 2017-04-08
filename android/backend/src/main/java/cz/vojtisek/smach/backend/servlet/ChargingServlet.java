@@ -28,6 +28,6 @@ public class ChargingServlet extends HttpServlet {
 
         ObjectifyService.ofy().save().entity(chargingSession).now();
 
-        out.println(json.toString());
+        out.print(json.toString());
     }
 }

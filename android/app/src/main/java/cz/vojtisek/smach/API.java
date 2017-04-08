@@ -15,4 +15,10 @@ public interface API {
 
     @GET("charging")
     Call<JsonObject> getCharging(@Query("charging_session_id") String chargingSessionId);
+
+    @GET("stats")
+    Call<String> getStats();
+
+    @GET("charging/stop")
+    Call<String> stopCharging(@Query("charging_session_id") String chargingSessionId);
 }

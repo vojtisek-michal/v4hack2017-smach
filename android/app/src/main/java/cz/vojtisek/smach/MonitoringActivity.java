@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -26,7 +28,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static cz.vojtisek.smach.MainActivity.EXTRA_CHARGING_SESSION_ID;
+import static cz.vojtisek.smach.AmpsetActivity.EXTRA_CHARGING_SESSION_ID;
 
 public class MonitoringActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class MonitoringActivity extends AppCompatActivity {
     private TextView mTextViewTotalPrice;
     private View mLayoutReview;
     private EditText mEditTextReview;
+    private Button mButtonStop;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -86,6 +89,13 @@ public class MonitoringActivity extends AppCompatActivity {
                 finish();
             }
         });
+        mButtonStop = (Button) findViewById(R.id.buttonStop);
+        mButtonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopCharging();
+            }
+        });
     }
 
     @Override
@@ -106,8 +116,26 @@ public class MonitoringActivity extends AppCompatActivity {
     }
 
     private void onChargingEnd() {
+        mButtonStop.setVisibility(View.GONE);
         mLayoutReview.setVisibility(View.VISIBLE);
         mEditTextReview.requestFocus();
+    }
+
+    private void stopCharging() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://parabolic-might-163914.appspot.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        API api = retrofit.create(API.class);
+        Call<String> call = api.stopCharging(mChargingSessionId);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+            }
+        });
     }
 
     private void readData() {
@@ -121,7 +149,8 @@ public class MonitoringActivity extends AppCompatActivity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                //Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(AmpsetActivity.this, response.body(), Toast.LENGTH_LONG).show();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MonitoringActivity.this);
                 JsonObject json = response.body();
                 mTextViewCurrentWatt.setText(String.format(Locale.ENGLISH, "%d W",
                         json.get("watt_current").getAsInt()));
@@ -131,8 +160,8 @@ public class MonitoringActivity extends AppCompatActivity {
                         json.get("amp_current").getAsInt()));
                 mTextViewSetAmp.setText(String.format(Locale.ENGLISH, "%d A",
                         json.get("amp_set").getAsInt()));
-                mTextViewTotalPrice.setText(String.format(Locale.ENGLISH, "%d Kč",
-                        Math.round(json.get("watt_total").getAsInt() * 5.5)));
+                mTextViewTotalPrice.setText(String.format(Locale.ENGLISH, "%.2f Kč",
+                        json.get("watt_total").getAsInt() * Float.valueOf(prefs.getString("kwh_price", "5.5"))/1000));
             }
 
             @Override

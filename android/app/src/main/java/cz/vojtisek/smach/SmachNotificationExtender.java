@@ -17,9 +17,9 @@ public class SmachNotificationExtender extends NotificationExtenderService {
             if (!TextUtils.isEmpty(chargingSessionId)) {
                 String event = data.optString("event");
                 if ("charging_start".equals(event)) {
-                    Intent i = new Intent(this, MainActivity.class);
+                    Intent i = new Intent(this, AmpsetActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.putExtra(MainActivity.EXTRA_CHARGING_SESSION_ID, chargingSessionId);
+                    i.putExtra(AmpsetActivity.EXTRA_CHARGING_SESSION_ID, chargingSessionId);
                     startActivity(i);
                     return true;
                 } else if ("charging_end".equals(event)) {

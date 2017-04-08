@@ -96,6 +96,16 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         </GridLayout>
 
+        <Button
+            android:id="@+id/buttonStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center"
+            android:text="Stop charging" />
+
         <LinearLayout
             android:id="@+id/layoutReview"
             android:visibility="gone"
@@ -110,6 +120,14 @@
                 android:text="Charging ended, leave a review:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@color/accent" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="3" />
 
             <EditText
                 android:id="@+id/editTextReview"
