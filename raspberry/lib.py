@@ -23,15 +23,14 @@ def get_amp(CONFIG, charging_id, limit=0):
     '''
     Wait for chargingn current
     '''
-    amps = int(urllib2.urlopen(CONFIG['API_URL'] + "/amp?charging_session_id=" + charging_id).read())
 
-    if amps > 0:
-        return amps
-    elif limi < 30:
+    while True:
+        amps = int(urllib2.urlopen(CONFIG['API_URL'] + "/amp?charging_session_id=" + charging_id).read())
+
+        if amps > 0:
+            return amps
+
         time.sleep(1)
-        return get_amp(CONFIG, charging_id, limit + 1)
-    else:
-        raise Exception
 
 
 def charging_stats(CONFIG):
