@@ -5,6 +5,8 @@ import argparse
 import urllib2
 import time
 
+from random import random
+
 from lib import init_charging, stop_charging, charging_stats, rel_set, get_amp
 
 # ==API==
@@ -52,6 +54,16 @@ parser.add_argument('-c', '--sds-snmp-comunity',
 	default='sdsxpublic'
 	)
 
+parser.add_argument('-f', '--fake-mode',
+	help='Fake mode do not commicate with SDS.',
+	action='store_true',
+	)
+
+parser.add_argument('-fp', '--fake-preiode',
+	help='How many turns wait before fake plug. After same count of rounds is unpluged',
+	default=5,
+	)
+
 
 args = parser.parse_args()
 
@@ -60,21 +72,31 @@ CONFIG = dict(
 	SDS_IP=args.sds_ip,
 	SDS_PORT=args.sds_port,
 	WATTMETTER_NAME=args.wattmeter_name,
-	SDS_COMUNITY=args.sds_snmp_comunity
+	SDS_COMUNITY=args.sds_snmp_comunity,
+	FAKE_MODE=args.fake_mode,
+	FAKE_PERIOD=5,
 	)
 
 charging = False
 charged = False
 done_counter = 0
 
+fake_counter = 0
+fake_total = 0
+
 while True:
 
 	try:
-		# OFF rele for case that was left ON before unplug
-		rel_set(CONFIG, 0)
+		if CONFIG['FAKE_MODE'] and fake_counter > CONFIG['FAKE_PERIOD']:
+			print "Fakeing plug in."
+		else:
 
-		# get stats to check if SDS is runnig
-		stats = charging_stats(CONFIG)
+			# OFF rele for case that was left ON before unplug
+			rel_set(CONFIG, 0)
+
+			# get stats to check if SDS is runnig if not
+			# exception is raised. See Except part.
+			stats = charging_stats(CONFIG)
 
 		if charged:
 			print "Charged"
@@ -82,12 +104,14 @@ while True:
 			continue
 		else:
 			print "Cable pluged."
-	except:
+	except Exception as e:
 		print "Boring..."
 
 		done_counter = 0
 		charged = False
 		time.sleep(1)
+
+		fake_counter += 1
 
 		continue
 
@@ -97,14 +121,34 @@ while True:
 	print "Waiting for chargingi current..."
 
 	amp = get_amp(CONFIG, charging_id)
-	rel_set(CONFIG, 1)
+	
+	if not CONFIG['FAKE_MODE']:
+		rel_set(CONFIG, 1)
+
 	print "Charging by", amp, "A"
 
 	while True:
 
 		try:
-			# get stats to check if SDS is runnig
-			stats = charging_stats(CONFIG)
+
+			if CONFIG['FAKE_MODE']:
+				r = random()
+				print r
+				w = (amp - r) * 230/1000
+				fake_total += w
+				stats = dict(
+			        current=w,
+			        total=fake_total,
+			        )
+
+				fake_counter += 1
+				if fake_counter > 3*CONFIG['FAKE_PERIOD']:
+					fake_total = 0
+					fake_counter = 0
+					raise Exception
+			else:
+				# get stats to check if SDS is runnig
+				stats = charging_stats(CONFIG)
 
 			curr_amps = int((stats['current']*1000)/230)
 
@@ -122,7 +166,7 @@ while True:
 				charging = False
 				break
 
-			print "Sending stats:", stats['current'], 'kW', curr_amps, 'A, total:', stats['total'], 'kWh'
+			print "Sending stats:", round(stats['current'], 2), 'kW', curr_amps, 'A, total:', round(stats['total'], 2), 'kWh'
 		except:
 			stop_charging(CONFIG, charging_id)
 			print "Cable unpluged. Charging stoped."
@@ -132,8 +176,8 @@ while True:
 			break
 
 		ses_id = "charging_session_id="+ charging_id
-		curr_w = "&watt_current=%i" % (stats['current']*1000)
-		tota_w = "&watt_total=%i" % (stats['total']*1000)
+		curr_w = "&watt_current=%i" % round(stats['current']*1000, 2)
+		tota_w = "&watt_total=%i" % round((stats['total']*1000), 2)
 		curr_a = "&amp_current=%i" % curr_amps
 		set_a  = "&amp_set=%i" % amp
 
