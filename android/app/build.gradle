@@ -3,22 +3,39 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+    signingConfigs {
+        releaseSmach {
+            storeFile file('/Users/vojtisek/Dropbox/vojtisek_michal_googleplay_keystore.jks')
+            storePassword "pjdrulez_07"
+            keyAlias "smach"
+            keyPassword "pjdrulez"
+        }
+    }
     defaultConfig {
         applicationId "cz.vojtisek.smach"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.3"
         manifestPlaceholders = [onesignal_app_id               : "b2ce144d-9aad-47e6-9cb6-146eab0d9286",
                                 onesignal_google_project_number: "REMOTE"]
-
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
+            manifestPlaceholders = [ google_maps_key:"AIzaSyC2bSqpOmOoR6IYGoVHMUAlTb_8ZxiPSV8"]
+            signingConfig signingConfigs.releaseSmach
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            manifestPlaceholders = [ google_maps_key:"AIzaSyBuN3EeXXna1dbwfFhBprcXgy66SduHE-c"]
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ""
+        }
+    }
+    productFlavors {
     }
 }
 
@@ -36,7 +53,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'
-
     compile 'com.google.firebase:firebase-core:10.2.1'
     compile 'com.google.firebase:firebase-crash:10.2.1'
 }

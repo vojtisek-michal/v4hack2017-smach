@@ -3,7 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="cz.vojtisek.smach.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="cz.vojtisek.smach.activity.SettingsActivity$GeneralPreferenceFragment"
 
         android:title="@string/pref_header_general" />
 

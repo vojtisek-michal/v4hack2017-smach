@@ -1,4 +1,4 @@
-package cz.vojtisek.smach;
+package cz.vojtisek.smach.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,13 +19,13 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import cz.vojtisek.smach.API;
+import cz.vojtisek.smach.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-
-import static cz.vojtisek.smach.MonitoringActivity.ACTION_CHARGING_END;
 
 public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
@@ -38,7 +38,7 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (ACTION_CHARGING_END.equals(intent.getAction())) {
+            if (MonitoringActivity.ACTION_CHARGING_END.equals(intent.getAction())) {
                 finish();
             }
         }
@@ -74,7 +74,7 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        mTextView.setText(String.format(Locale.ENGLISH, "%d A", i+1));
+        mTextView.setText(String.format(Locale.ENGLISH, "%d A", i + 1));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
                 .build();
         API api = retrofit.create(API.class);
 
-        Call<String> call = api.setAmp(mChargingSessionId, mSeekBar.getProgress()+1);
+        Call<String> call = api.setAmp(mChargingSessionId, mSeekBar.getProgress() + 1);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -135,7 +135,7 @@ public class AmpsetActivity extends AppCompatActivity implements SeekBar.OnSeekB
     protected void onResume() {
         super.onResume();
 
-        registerReceiver(mReceiver, new IntentFilter(ACTION_CHARGING_END));
+        registerReceiver(mReceiver, new IntentFilter(MonitoringActivity.ACTION_CHARGING_END));
     }
 
     @Override

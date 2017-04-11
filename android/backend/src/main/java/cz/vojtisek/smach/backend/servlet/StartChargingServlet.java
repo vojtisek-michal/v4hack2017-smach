@@ -1,7 +1,5 @@
 package cz.vojtisek.smach.backend.servlet;
 
-import com.googlecode.objectify.ObjectifyService;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
@@ -14,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import cz.vojtisek.smach.backend.ChargingSession;
 import cz.vojtisek.smach.backend.OpenSignalHelper;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 public class StartChargingServlet extends HttpServlet {
 
     @Override
@@ -23,7 +23,7 @@ public class StartChargingServlet extends HttpServlet {
         ChargingSession chargingSession = new ChargingSession();
         chargingSession.id = getChargingSessionId();
         chargingSession.active = true;
-        ObjectifyService.ofy().save().entity(chargingSession).now();
+        ofy().save().entity(chargingSession).now();
 
         OpenSignalHelper openSignalHelper = new OpenSignalHelper();
         String response = openSignalHelper.pushMessage("&data[event]=charging_start&data[charging_session_id]=" + chargingSession.id);

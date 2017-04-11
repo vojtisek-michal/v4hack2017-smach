@@ -1,7 +1,5 @@
 package cz.vojtisek.smach.backend.servlet;
 
-import com.googlecode.objectify.ObjectifyService;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
@@ -12,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cz.vojtisek.smach.backend.ChargingSession;
+
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class AmpServlet extends HttpServlet {
 
@@ -26,7 +26,7 @@ public class AmpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ChargingSession chargingSession = ChargingSession.loadChargingSessionFromRequest(req);
         chargingSession.ampSet = Integer.valueOf(req.getParameter("amp"));
-        ObjectifyService.ofy().save().entity(chargingSession).now();
+        ofy().save().entity(chargingSession).now();
 
         PrintWriter out = resp.getWriter();
         out.println(String.format(Locale.ENGLISH,

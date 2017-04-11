@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="cz.vojtisek.smach.MainActivity">
+    tools:context="cz.vojtisek.smach.activity.MainActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,14 +23,14 @@
                 android:layout_height="wrap_content"
                 android:text="Total year consumption"
                 android:layout_marginRight="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalYearCon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Total month consumption"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalMonthCon"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
                 android:layout_marginRight="8dp"
                 android:text="Total week consumption"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalWeekCon"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                 android:text="Total year cost"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalYearCost"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Total month cost"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalMonthCost"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_marginRight="8dp"
                 android:text="Total week cost"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textViewTotalWeekCost"
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="loading..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
         </GridLayout>
     </LinearLayout>

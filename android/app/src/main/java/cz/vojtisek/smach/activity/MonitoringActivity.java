@@ -1,4 +1,4 @@
-package cz.vojtisek.smach;
+package cz.vojtisek.smach.activity;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -23,20 +23,19 @@ import com.google.gson.JsonObject;
 
 import java.util.Locale;
 
+import cz.vojtisek.smach.API;
+import cz.vojtisek.smach.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static cz.vojtisek.smach.AmpsetActivity.EXTRA_CHARGING_SESSION_ID;
-
 public class MonitoringActivity extends AppCompatActivity {
-
-    public static String ACTION_CHARGING_END = "cz.vojtisek.smach.ACTION_CHARGING_END";
 
     private static final long TIME_BETWEEN_MESSAGES = 2 * DateUtils.SECOND_IN_MILLIS;
     private static final int MSG_DO_IT = 1;
+    public static String ACTION_CHARGING_END = "cz.vojtisek.smach.ACTION_CHARGING_END";
     private String mChargingSessionId;
     private TextView mTextViewCurrentWatt;
     private TextView mTextViewCurrentAmp;
@@ -71,7 +70,7 @@ public class MonitoringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mChargingSessionId = getIntent().getStringExtra(EXTRA_CHARGING_SESSION_ID);
+        mChargingSessionId = getIntent().getStringExtra(AmpsetActivity.EXTRA_CHARGING_SESSION_ID);
         if (TextUtils.isEmpty(mChargingSessionId)) {
             finish();
         }
@@ -124,7 +123,7 @@ public class MonitoringActivity extends AppCompatActivity {
 
     private void showProgressDialogAndFinish() {
         final ProgressDialog ringProgressDialog = ProgressDialog.show(MonitoringActivity.this,
-                "Please wait ...",	"Proceeding payment ...", true, false);
+                "Please wait ...", "Proceeding payment ...", true, false);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -159,6 +158,7 @@ public class MonitoringActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
             }
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
             }
@@ -188,7 +188,7 @@ public class MonitoringActivity extends AppCompatActivity {
                 mTextViewSetAmp.setText(String.format(Locale.ENGLISH, "%d A",
                         json.get("amp_set").getAsInt()));
                 mTextViewTotalPrice.setText(String.format(Locale.ENGLISH, "%.2f Kč",
-                        json.get("watt_total").getAsInt() * Float.valueOf(prefs.getString("kwh_price", "5.5"))/1000));
+                        json.get("watt_total").getAsInt() * Float.valueOf(prefs.getString("kwh_price", "5.5")) / 1000));
             }
 
             @Override

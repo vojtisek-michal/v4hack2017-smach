@@ -1,4 +1,4 @@
-package cz.vojtisek.smach;
+package cz.vojtisek.smach.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import cz.vojtisek.smach.API;
+import cz.vojtisek.smach.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-
-import com.google.firebase.crash.FirebaseCrash;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 int totalWats = Integer.valueOf(response.body().trim());
-                long totalCost = Math.round(Integer.valueOf(response.body().trim()) * Float.valueOf(prefs.getString("kwh_price", "5.5"))/1000);
+                long totalCost = Math.round(Integer.valueOf(response.body().trim()) * Float.valueOf(prefs.getString("kwh_price", "5.5")) / 1000);
 
-                mTextViewTotalYearCon.setText(formatWithThousant(totalWats));
-                mTextViewTotalMonthCon.setText(formatWithThousant(totalWats));
-                mTextViewTotalWeekCon.setText(formatWithThousant(totalWats));
+                mTextViewTotalYearCon.setText(formatToWattsWithUnits(totalWats));
+                mTextViewTotalMonthCon.setText(formatToWattsWithUnits(totalWats));
+                mTextViewTotalWeekCon.setText(formatToWattsWithUnits(totalWats));
 
                 mTextViewTotalYearCost.setText(String.format(Locale.ENGLISH,
                         "%d Kč", totalCost));
@@ -100,8 +100,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String formatWithThousant(int value) {
-        if (value >= 1000) {
+    private String formatToWattsWithUnits(int value) {
+        if (value >= 1000000) {
+            return String.format(Locale.ENGLISH, "%.2f mWh", (float) value / 1000000);
+        } else if (value >= 1000) {
             return String.format(Locale.ENGLISH, "%.2f kWh", (float) value / 1000);
         } else {
             return String.format(Locale.ENGLISH, "%d Wh", value);

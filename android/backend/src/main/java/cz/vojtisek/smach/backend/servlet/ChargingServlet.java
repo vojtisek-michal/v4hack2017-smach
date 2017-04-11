@@ -1,7 +1,6 @@
 package cz.vojtisek.smach.backend.servlet;
 
 import com.google.appengine.repackaged.com.google.gson.JsonObject;
-import com.googlecode.objectify.ObjectifyService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cz.vojtisek.smach.backend.ChargingSession;
+
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class ChargingServlet extends HttpServlet {
 
@@ -26,7 +27,7 @@ public class ChargingServlet extends HttpServlet {
         json.addProperty("amp_current", chargingSession.ampCurrent);
         json.addProperty("amp_set", chargingSession.ampSet);
 
-        ObjectifyService.ofy().save().entity(chargingSession).now();
+        ofy().save().entity(chargingSession).now();
 
         out.print(json.toString());
     }

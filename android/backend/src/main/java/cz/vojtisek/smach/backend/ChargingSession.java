@@ -12,6 +12,7 @@ public class ChargingSession {
     @Id
     public String id;
     public int wattCurrent;
+    @Index
     public int wattTotal;
     public int ampCurrent;
     public int ampSet;

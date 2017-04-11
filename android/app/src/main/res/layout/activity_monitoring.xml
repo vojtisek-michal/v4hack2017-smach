@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cz.vojtisek.smach.MonitoringActivity">
+    tools:context="cz.vojtisek.smach.activity.MonitoringActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,13 +23,13 @@
                 android:layout_height="wrap_content"
                 android:text="Charging power:"
                 android:layout_marginRight="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/textViewCurrentWatt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="15 W"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -38,14 +38,14 @@
                 android:text="Charging current:"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/textViewCurrentAmp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10 A"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -54,14 +54,14 @@
                 android:layout_marginRight="8dp"
                 android:text="Maximum current"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/textViewSetAmp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10 A"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -70,14 +70,14 @@
                 android:text="Total charged power:"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/textViewTotalWatt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10 KW/h"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -86,14 +86,14 @@
                 android:text="Total charge cost:"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/textViewTotalPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5 CZK"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textSize="16sp" />
         </GridLayout>
 
         <Button
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="Charging ended, leave a review:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textSize="16sp"
                 android:textColor="@color/accent" />
 
             <RatingBar

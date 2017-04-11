@@ -8,6 +8,9 @@ import com.onesignal.OSNotificationReceivedResult;
 
 import org.json.JSONObject;
 
+import cz.vojtisek.smach.activity.AmpsetActivity;
+import cz.vojtisek.smach.activity.MonitoringActivity;
+
 public class SmachNotificationExtender extends NotificationExtenderService {
     @Override
     protected boolean onNotificationProcessing(OSNotificationReceivedResult receivedResult) {

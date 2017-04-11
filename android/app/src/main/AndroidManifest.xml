@@ -7,60 +7,54 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
+         location permissions for the 'MyLocation' functionality.
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    -->
 
     <application
-        android:name=".SmachApplication"
+        android:name="cz.vojtisek.smach.SmachApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="cz.vojtisek.smach.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MonitoringActivity" />
-        <activity android:name=".AmpsetActivity" />
+        <activity android:name="cz.vojtisek.smach.activity.MonitoringActivity" />
+        <activity android:name="cz.vojtisek.smach.activity.AmpsetActivity" />
+        <activity
+            android:name="cz.vojtisek.smach.activity.MapsActivity"
+            android:label="@string/title_activity_maps"
+            android:parentActivityName="cz.vojtisek.smach.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cz.vojtisek.smach.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name="cz.vojtisek.smach.activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="cz.vojtisek.smach.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cz.vojtisek.smach.activity.MainActivity" />
+        </activity>
 
         <service
-            android:name=".SmachNotificationExtender"
+            android:name="cz.vojtisek.smach.SmachNotificationExtender"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />
             </intent-filter>
         </service>
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="cz.vojtisek.smach.MainActivity" />
-        </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="cz.vojtisek.smach.MainActivity" />
-        </activity>
+            android:value="${google_maps_key}" />
     </application>
 
 </manifest>

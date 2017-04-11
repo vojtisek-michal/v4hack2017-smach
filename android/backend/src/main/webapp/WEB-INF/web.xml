@@ -43,7 +43,7 @@
     <servlet-mapping>
         <servlet-name>AmpServlet</servlet-name>
         <url-pattern>/amp</url-pattern>
-    </servlet-mapping>w
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>StatsServlet</servlet-name>
@@ -52,6 +52,15 @@
     <servlet-mapping>
         <servlet-name>StatsServlet</servlet-name>
         <url-pattern>/stats</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ResetDataServlet</servlet-name>
+        <servlet-class>cz.vojtisek.smach.backend.servlet.ResetDataServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ResetDataServlet</servlet-name>
+        <url-pattern>/reset</url-pattern>
     </servlet-mapping>
 
     <filter>

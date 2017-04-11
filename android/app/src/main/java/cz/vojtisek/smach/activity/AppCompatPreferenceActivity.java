@@ -1,4 +1,4 @@
-package cz.vojtisek.smach;
+package cz.vojtisek.smach.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
